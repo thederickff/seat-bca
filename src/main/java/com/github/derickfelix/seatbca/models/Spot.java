@@ -14,6 +14,14 @@ public class Spot {
 
   private String name;
 
+  public Spot() {
+  }
+
+  public Spot(Long id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+
   public Long getId() {
     return id;
   }
