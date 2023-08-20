@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.derickfelix.seatbca.controllers.dto.request.UserRequest;
 import com.github.derickfelix.seatbca.models.User;
 import com.github.derickfelix.seatbca.repositories.UserRepository;
 
@@ -50,10 +52,29 @@ public class UserController {
   }
 
   @PostMapping
-  public User store(@RequestBody User user) {
-    if (user.getName() == null) {
+  public User store(@RequestBody UserRequest request) {
+    if (request.getName() == null) {
       return null;
     }
-    return this.repository.save(user);
+
+    return this.repository.save(new User(null, request.getName()));
+  }
+
+  @PutMapping("{id}")
+  public User updateById(@PathVariable Long id, @RequestBody UserRequest request) {
+    if (request.getName() == null) {
+      return null;
+    }
+
+    Optional<User> optional = this.repository.findById(id);
+
+    if (optional.isPresent()) {
+      User user = optional.get();
+      user.setName(request.getName());
+
+      return this.repository.save(user);
+    }
+
+    return null;
   }
 }
